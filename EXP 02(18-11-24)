@@ -1,0 +1,92 @@
+AIM
+The aim of the provided code is to solve the N-Queens problem using backtracking.
+
+Procedure:
+1. Understanding the Problem
+The problem involves placing N queens on an N x N chessboard.
+Each queen can attack any other queen in the same row, column, or diagonal.
+The solution should ensure that all queens are placed in non-threatening positions.
+2. Key Components of the Code
+Board Representation
+The board is represented as a 2D list, where board[i][j] = 1 indicates a queen placed at position (i, j), and 0 indicates an empty cell.
+Safety Check
+The function is_safe(board, row, col) checks whether it is safe to place a queen at position (row, col):
+It checks the current row to the left of (row, col).
+It checks the upper diagonal to the left of (row, col).
+It checks the lower diagonal to the left of (row, col).
+Recursive Backtracking:
+The function solve_n_queens_util(board, col) tries to place a queen in each row of the current column (col):
+If it can safely place a queen, it does so and recursively attempts to solve for the next column.
+If placing the queen leads to a dead end (i.e., no further safe placements), it backtracks by removing the queen and trying the next row.
+Solution Verification:
+The function solve_n_queens(n) initializes the chessboard and calls the recursive utility function.
+If a solution exists, the chessboard is printed; otherwise, it reports that no solution exists.
+
+
+program:
+def print_solution(board):
+    for row in board:
+        print(" ".join(str(cell) for cell in row))
+    print("\n")
+
+def is_safe(board, row, col):
+    # Check this row on left side
+    for i in range(col):
+        if board[row][i] == 1:
+            return False
+
+    # Check upper diagonal on left side
+    for i, j in zip(range(row, -1, -1), range(col, -1, -1)):
+        if board[i][j] == 1:
+            return False
+
+    # Check lower diagonal on left side
+    for i, j in zip(range(row, len(board), 1), range(col, -1, -1)):
+        if board[i][j] == 1:
+            return False
+
+    return True
+
+def solve_n_queens_util(board, col):
+    # Base case: If all queens are placed then return True
+    if col >= len(board):
+        return True
+
+    # Consider this column and try placing this queen in all rows one by one
+    for i in range(len(board)):
+        if is_safe(board, i, col):
+            # Place this queen in board[i][col]
+            board[i][col] = 1
+
+            # Recur to place rest of the queens
+            if solve_n_queens_util(board, col + 1):
+                return True
+
+            # If placing queen in board[i][col] doesn't lead to a solution
+            # then remove queen from board[i][col]
+            board[i][col] = 0
+
+    # If the queen cannot be placed in any row in this column col then return False
+    return False
+
+def solve_n_queens(n):
+    board = [[0] * n for _ in range(n)]
+    if not solve_n_queens_util(board, 0):
+        print("Solution does not exist")
+        return False
+    print_solution(board)
+    return True
+
+# Example usage
+solve_n_queens(8)
+
+
+output:
+1 0 0 0 0 0 0 0
+0 0 0 0 0 0 1 0
+0 0 0 0 1 0 0 0
+0 0 0 0 0 0 0 1
+0 1 0 0 0 0 0 0
+0 0 0 1 0 0 0 0
+0 0 0 0 0 1 0 0
+0 0 1 0 0 0 0 0
