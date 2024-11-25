@@ -1,0 +1,84 @@
+AIM:
+The aim of the provided code is to solve cryptarithmetic puzzles using brute-force by testing all possible digit assignments to the letters involved
+
+Procedure:
+1. Understanding Cryptarithmetic:
+Each word in the puzzle is treated as a number, with each letter representing a unique digit.
+The solution requires:
+Assigning a unique digit (0-9) to each letter.
+Ensuring the arithmetic equation is valid.
+2. Key Components of the Code:
+Extract Unique Letters:
+Combine all words into a single string and extract the unique letters using set.
+Extract Unique Letters:
+Identify the distinct letters in the puzzle and ensure they do not exceed 10.
+Generate Permutations:
+Generate all possible digit assignments to the letters and evaluate each assignment.
+Check Validity
+For each permutation, verify if the numeric representation satisfies the arithmetic equation.
+Output Solution:
+If a solution is found, display the mapping of letters to digits.
+If no solution is found after testing all permutations, print an appropriate message.
+
+
+program:
+from itertools import permutations
+
+def is_valid_solution(assignment, letters, words):
+    # Create a mapping from letters to digits
+    letter_to_digit = {letter: digit for letter, digit in zip(letters, assignment)}
+
+    # Convert the words to their numeric form
+    numeric_words = []
+    for word in words:
+        numeric_value = 0
+        for letter in word:
+            numeric_value = numeric_value * 10 + letter_to_digit[letter]
+        numeric_words.append(numeric_value)
+
+    # Check if the equation is satisfied
+    if sum(numeric_words[:-1]) == numeric_words[-1]:
+        return True
+    return False
+
+def cryptarithmetic_solver(words):
+    # Extract unique letters
+    letters = set(''.join(words))
+    if len(letters) > 10:
+        raise ValueError("Too many unique letters for digits 0-9")
+
+    # Try all permutations of digits 0-9 for the letters
+    for perm in permutations(range(10), len(letters)):
+        # Check if the solution is valid
+        if is_valid_solution(perm, letters, words):
+            # Create the solution mapping
+            solution = {letter: digit for letter, digit in zip(letters, perm)}
+            return solution
+
+    return None
+
+def main():
+    # Example puzzle: SEND + MORE = MONEY
+    words = ["SEND", "MORE", "MONEY"]
+    solution = cryptarithmetic_solver(words)
+
+    if solution:
+        print("Solution found:")
+        for letter, digit in solution.items():
+            print(f"{letter}: {digit}")
+    else:
+        print("No solution found.")
+
+if __name__ == "__main__":
+    main()
+
+output:
+Solution found:
+R: 1
+Y: 3
+M: 0
+D: 9
+S: 7
+E: 4
+N: 2
+O: 8
